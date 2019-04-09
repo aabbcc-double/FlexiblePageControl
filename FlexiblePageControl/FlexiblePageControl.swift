@@ -8,6 +8,7 @@
 
 import UIKit
 
+@IBDesignable
 public class FlexiblePageControl: UIView {
 
     // MARK: public
@@ -108,16 +109,8 @@ public class FlexiblePageControl: UIView {
         updateViewSize()
     }
 
-    public override func layoutSubviews() {
-
-        super.layoutSubviews()
-        
-        scrollView.center = CGPoint(x: bounds.width/2, y: bounds.height/2)
-    }
-
     public override var intrinsicContentSize: CGSize {
-
-        return CGSize(width: itemSize * CGFloat(displayCount), height: itemSize)
+        return CGSize(width: itemSize * CGFloat(min(displayCount, numberOfPages)), height: itemSize)
     }
 
     public func setProgress(contentOffsetX: CGFloat, pageWidth: CGFloat) {
@@ -147,15 +140,18 @@ public class FlexiblePageControl: UIView {
     private func setup() {
 
         backgroundColor = .clear
+        self.clipsToBounds = true
 
         scrollView.backgroundColor = .clear
         scrollView.isUserInteractionEnabled = false
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         addSubview(scrollView)
     }
 
     private func update(currentPage: Int, config: Config) {
+        self.invalidateIntrinsicContentSize()
 
         if currentPage < displayCount {
 
